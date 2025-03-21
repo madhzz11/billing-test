@@ -29,14 +29,19 @@ const ItemList: React.FC<ItemListProps> = ({
           className="flex items-center justify-between py-2 border-b border-border last:border-0 content-appear"
           style={{ '--delay': index } as React.CSSProperties}
         >
-          <div className="flex items-center gap-3">
-            <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center">
-              <Check size={12} className="text-accent" />
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center">
+                <Check size={12} className="text-accent" />
+              </div>
+              <span className="font-medium">{item.name}</span>
             </div>
-            <span className="font-medium">{item.name}</span>
+            <span className="text-[9px] text-gray-400 ml-7">
+              ID: {item.id.substring(0, 8)}
+            </span>
           </div>
           
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 sm:gap-6">
             <div className="flex items-center gap-2">
               <button 
                 className="quantity-control"
@@ -46,7 +51,7 @@ const ItemList: React.FC<ItemListProps> = ({
                 <Minus size={14} />
               </button>
               
-              <span className="w-8 text-center font-medium">{item.quantity}</span>
+              <span className="w-6 sm:w-8 text-center font-medium">{item.quantity}</span>
               
               <button 
                 className="quantity-control"
@@ -57,7 +62,7 @@ const ItemList: React.FC<ItemListProps> = ({
               </button>
             </div>
             
-            <div className="w-24 text-right">
+            <div className="w-16 sm:w-24 text-right">
               <span className="font-semibold">
                 {item.price.toFixed(2)}
               </span>

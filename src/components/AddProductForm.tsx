@@ -28,6 +28,7 @@ import { PlusCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from 'uuid';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface Category {
   id: string;
@@ -49,6 +50,7 @@ interface AddProductFormProps {
 const AddProductForm: React.FC<AddProductFormProps> = ({ categories, onAddProduct }) => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
+  const isMobile = useIsMobile();
   
   const form = useForm({
     defaultValues: {
@@ -59,8 +61,10 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ categories, onAddProduc
   });
 
   const onSubmit = (values: any) => {
+    // Create a new product with a unique ID
+    const newId = uuidv4();
     const newProduct: MenuItem = {
-      id: uuidv4(), // Generate unique ID
+      id: newId,
       name: values.name,
       categoryId: values.categoryId,
       price: parseFloat(values.price),
@@ -70,7 +74,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ categories, onAddProduc
     
     toast({
       title: "Product Added",
-      description: `${values.name} has been added to the menu.`,
+      description: `${values.name} has been added with ID: ${newId.substring(0, 8)}`,
       duration: 3000,
     });
     
@@ -83,12 +87,16 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ categories, onAddProduc
       <DialogTrigger asChild>
         <Button 
           className="bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-md hover:shadow-lg transition-all duration-300"
+          size={isMobile ? "sm" : "default"}
         >
           <PlusCircle size={16} className="mr-2" />
-          Add Product
+          {isMobile ? "Add" : "Add Product"}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className={cn(
+        "sm:max-w-[425px]",
+        isMobile && "w-[calc(100%-2rem)] mx-auto"
+      )}>
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold bg-gradient-to-r from-purple-700 via-pink-600 to-violet-700 bg-clip-text text-transparent">
             Add New Product
@@ -159,7 +167,12 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ categories, onAddProduc
             />
             
             <div className="flex justify-end pt-4">
-              <Button type="submit">Add Product</Button>
+              <Button 
+                type="submit"
+                className="bg-gradient-to-r from-purple-600 to-pink-500 text-white"
+              >
+                Add Product
+              </Button>
             </div>
           </form>
         </Form>
