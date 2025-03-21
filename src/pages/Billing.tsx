@@ -4,11 +4,13 @@ import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Check, CreditCard, Search, ShoppingCart, Calendar, Printer } from 'lucide-react';
+import { v4 as uuidv4 } from 'uuid';
 
 import CategorySelector from '@/components/CategorySelector';
 import MenuItems from '@/components/MenuItems';
 import ItemList from '@/components/ItemList';
 import PaymentOptions from '@/components/PaymentOptions';
+import AddProductForm from '@/components/AddProductForm';
 
 // Define types
 interface MenuItem {
@@ -38,6 +40,20 @@ const Billing = () => {
   const [paymentMethod, setPaymentMethod] = useState('cash');
   const [isLoyalty, setIsLoyalty] = useState(false);
   const [isFeedback, setIsFeedback] = useState(false);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([
+    { id: uuidv4(), name: '65 Biryani', categoryId: 'biryani', price: 240.00 },
+    { id: uuidv4(), name: 'Chicken Combo', categoryId: 'chicken', price: 220.00 },
+    { id: uuidv4(), name: 'Chicken Kothu Parotta', categoryId: 'kothu', price: 180.00 },
+    { id: uuidv4(), name: 'Egg Kothu Parotta', categoryId: 'egg', price: 150.00 },
+    { id: uuidv4(), name: 'Plain Veechu Parotta', categoryId: 'plain', price: 60.00 },
+    { id: uuidv4(), name: 'Parotta (Set)', categoryId: 'parotta', price: 60.00 },
+    { id: uuidv4(), name: 'Veechu Egg Parotta', categoryId: 'veechu', price: 110.00 },
+    { id: uuidv4(), name: 'Chapati (PCS)', categoryId: 'parotta', price: 35.00 },
+    { id: uuidv4(), name: 'Chapati (Set)', categoryId: 'parotta', price: 60.00 },
+    { id: uuidv4(), name: 'Chicken Dosai', categoryId: 'chicken', price: 150.00 },
+    { id: uuidv4(), name: 'Extra Paneer', categoryId: 'plain', price: 25.00 },
+    { id: uuidv4(), name: 'Idly', categoryId: 'plain', price: 25.00 },
+  ]);
 
   // Sample data
   const categories: Category[] = [
@@ -51,20 +67,10 @@ const Billing = () => {
     { id: 'veechu', name: 'Veechu Egg' },
   ];
 
-  const menuItems: MenuItem[] = [
-    { id: 'item1', name: '65 Biryani', categoryId: 'biryani', price: 240.00 },
-    { id: 'item2', name: 'Chicken Combo', categoryId: 'chicken', price: 220.00 },
-    { id: 'item3', name: 'Chicken Kothu Parotta', categoryId: 'kothu', price: 180.00 },
-    { id: 'item4', name: 'Egg Kothu Parotta', categoryId: 'egg', price: 150.00 },
-    { id: 'item5', name: 'Plain Veechu Parotta', categoryId: 'plain', price: 60.00 },
-    { id: 'item6', name: 'Parotta (Set)', categoryId: 'parotta', price: 60.00 },
-    { id: 'item7', name: 'Veechu Egg Parotta', categoryId: 'veechu', price: 110.00 },
-    { id: 'item8', name: 'Chapati (PCS)', categoryId: 'parotta', price: 35.00 },
-    { id: 'item9', name: 'Chapati (Set)', categoryId: 'parotta', price: 60.00 },
-    { id: 'item10', name: 'Chicken Dosai', categoryId: 'chicken', price: 150.00 },
-    { id: 'item11', name: 'Extra Paneer', categoryId: 'plain', price: 25.00 },
-    { id: 'item12', name: 'Idly', categoryId: 'plain', price: 25.00 },
-  ];
+  // Handle adding a new product
+  const handleAddProduct = (product: MenuItem) => {
+    setMenuItems(prevItems => [...prevItems, product]);
+  };
 
   // Filter menu items based on search query
   const filteredItems = searchQuery
@@ -156,17 +162,26 @@ const Billing = () => {
       <div className="container mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column - Menu & Categories */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Search Bar */}
-          <div className="relative animate-fade-in">
-            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <Search size={18} className="text-muted-foreground" />
+          {/* Search and Add Product Row */}
+          <div className="flex flex-col sm:flex-row gap-4 animate-fade-in">
+            {/* Search Bar */}
+            <div className="relative flex-grow">
+              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <Search size={18} className="text-muted-foreground" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search menu items..."
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-purple-100 focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition-all duration-300"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
-            <input
-              type="text"
-              placeholder="Search menu items..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-purple-100 focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition-all duration-300"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+            
+            {/* Add Product Button */}
+            <AddProductForm 
+              categories={categories} 
+              onAddProduct={handleAddProduct}
             />
           </div>
 
